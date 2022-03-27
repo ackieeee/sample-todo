@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+    appserver:
+        build:
+            context: ./docker
+        container_name: todo-appserver
+        tty: true
+        environment:
+            - MYSQL_USER=todo
+            - MYSQL_PASSWORD=todo
+            - MYSQL_HOST=db
+            - MYSQL_PORT=3306
+            - MYSQL_DATABASE=todo
+        ports:
+            - 3000:3000
+        volumes:
+            - ./:/app
+    db:
+        image: mysql:5.7
+        container_name: todo-db
+        command: mysqld --user=root
+        tty: true
+        ports:
+            - 3306:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=todo
+            - MYSQL_USER=todo
+            - MYSQL_PASSWORD=todo
+            - MYSQL_DATABASE=todo
+        volumes:
+            - ./data:/data
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 5s
+            retries: 10
