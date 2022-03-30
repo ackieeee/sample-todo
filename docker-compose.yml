@@ -29,7 +29,7 @@ services:
             - MYSQL_DATABASE=todo
         volumes:
             - ./data:/data
-            - ./database:/docker-entrypoint-initdb.d
+            - ./database/sql:/docker-entrypoint-initdb.d
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
             timeout: 5s
