@@ -1,12 +1,10 @@
 package main
 
 import (
-	"context"
 	"database/sql"
-	"log"
 	"net/http"
 
-	"github.com/gba-3/sample-todo/models"
+	"github.com/gba-3/sample-todo/registry"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/go-sql-driver/mysql"
@@ -20,17 +18,8 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	ctx := context.Background()
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("call")
-		tasks, err := models.Tasks().All(ctx, db)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		for _, task := range tasks {
-			log.Println(task.Title)
-		}
-		w.Write([]byte("success"))
-	})
+
+	ah := registry.NewRegistory().Regist(db)
+	r.Get("/tasks", ah.Th.GetAll)
 	http.ListenAndServe(":3000", r)
 }
