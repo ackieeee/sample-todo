@@ -21,5 +21,6 @@ func main() {
 
 	ah := registry.NewRegistory().Regist(db)
 	r.Get("/tasks", ah.Th.GetAll)
+	r.Post("/tasks/add", ah.Th.AddTask)
 	http.ListenAndServe(":3000", r)
 }

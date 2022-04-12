@@ -2,9 +2,12 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
+	"github.com/gba-3/sample-todo/domain/entity"
 	"github.com/gba-3/sample-todo/usecase"
 )
 
@@ -13,11 +16,34 @@ type taskhandler struct {
 }
 
 type TaskHandler interface {
+	AddTask(w http.ResponseWriter, r *http.Request)
 	GetAll(w http.ResponseWriter, r *http.Request)
 }
 
 func NewTaskHandler(tu usecase.TaskUsecase) TaskHandler {
 	return &taskhandler{tu}
+}
+
+func (th *taskhandler) AddTask(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	task := entity.Task{}
+	if err := json.Unmarshal(body, &task); err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	if err := th.tu.AddTask(ctx, task.Title, task.Description, task.Date); err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Write([]byte("success: add task."))
+
 }
 
 func (th *taskhandler) GetAll(w http.ResponseWriter, r *http.Request) {
