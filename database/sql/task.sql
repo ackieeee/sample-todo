@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
     `title` varchar(255) NOT NULL,
     `description` varchar(255),
     `date` datetime DEFAULT CURRENT_TIMESTAMP,
-    `status` tinyint(1) DEFAULT 0,
+    `status` tinyint(1) DEFAULT 0 NOT NULL,
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
