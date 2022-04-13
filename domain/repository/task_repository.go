@@ -13,6 +13,7 @@ import (
 )
 
 type TaskRepository interface {
+	ChangeStatus(ctx context.Context, id int, status bool) error
 	AddTask(ctx context.Context, title string, description string, date string) error
 	GetAll(ctx context.Context) (entity.Tasks, error)
 }
@@ -25,9 +26,26 @@ func NewTaskRepository(db *sql.DB) TaskRepository {
 	return &taskRepository{db}
 }
 
+func (tr *taskRepository) ChangeStatus(ctx context.Context, id int, status bool) error {
+	task, err := models.FindTask(ctx, tr.db, uint64(id))
+	if err != nil {
+		return err
+	}
+	if task.Status == status {
+		return nil
+	}
+	task.Status = status
+	_, err = task.Update(ctx, tr.db, boil.Infer())
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
 func (tr *taskRepository) AddTask(ctx context.Context, title string, description string, date string) error {
 
-	var d null.String
+	d := null.NewString(description, true)
 	if description == "" {
 		d = null.NewString("", false)
 	}
@@ -56,7 +74,7 @@ func (tr *taskRepository) GetAll(ctx context.Context) (entity.Tasks, error) {
 			Title:       task.Title,
 			Description: task.Description.String,
 			Date:        task.Date.Time.String(),
-			Status:      task.Status.Bool,
+			Status:      task.Status,
 		}
 		es = append(es, e)
 	}

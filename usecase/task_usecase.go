@@ -8,6 +8,7 @@ import (
 )
 
 type TaskUsecase interface {
+	ChangeStatus(ctx context.Context, id int, status bool) error
 	AddTask(ctx context.Context, title string, description string, date string) error
 	GetAll(ctx context.Context) (entity.Tasks, error)
 }
@@ -18,6 +19,10 @@ type taskUsecase struct {
 
 func NewTaskUsecase(tr repository.TaskRepository) TaskUsecase {
 	return &taskUsecase{tr}
+}
+
+func (tu *taskUsecase) ChangeStatus(ctx context.Context, id int, status bool) error {
+	return tu.tr.ChangeStatus(ctx, id, status)
 }
 
 func (tu *taskUsecase) AddTask(ctx context.Context, title string, description string, date string) error {

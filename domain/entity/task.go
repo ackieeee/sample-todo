@@ -3,10 +3,11 @@ package entity
 import "encoding/json"
 
 type Task struct {
-	Title       string
-	Description string
-	Date        string
-	Status      bool
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Date        string `json:"date"`
+	Status      bool   `json:"status"`
 }
 
 type Tasks []Task

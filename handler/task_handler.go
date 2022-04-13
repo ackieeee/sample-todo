@@ -16,12 +16,38 @@ type taskhandler struct {
 }
 
 type TaskHandler interface {
+	ChangeStatus(w http.ResponseWriter, r *http.Request)
 	AddTask(w http.ResponseWriter, r *http.Request)
 	GetAll(w http.ResponseWriter, r *http.Request)
 }
 
 func NewTaskHandler(tu usecase.TaskUsecase) TaskHandler {
 	return &taskhandler{tu}
+}
+
+func (th *taskhandler) ChangeStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	task := entity.Task{}
+	if err := json.Unmarshal(body, &task); err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	if task.ID == 0 {
+		w.Write([]byte("task id is empty"))
+		return
+	}
+	err = th.tu.ChangeStatus(ctx, task.ID, task.Status)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Write([]byte("success: ChangeStatus"))
 }
 
 func (th *taskhandler) AddTask(w http.ResponseWriter, r *http.Request) {
