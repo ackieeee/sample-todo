@@ -9,3 +9,7 @@ import (
 func (c Container) GetTaskRepository(db *sql.DB) repository.TaskRepository {
 	return repository.NewTaskRepository(db)
 }
+
+func (c Container) GetUserRepository(db *sql.DB) repository.UserRepository {
+	return repository.NewUserRepository(db)
+}

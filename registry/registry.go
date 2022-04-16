@@ -24,5 +24,10 @@ func (r *Registory) Regist(db *sql.DB) *AppHandler {
 				r.c.GetTaskRepository(db),
 			),
 		),
+		handler.NewUserHandler(
+			r.c.GetUserUsecase(
+				r.c.GetUserRepository(db),
+			),
+		),
 	)
 }
