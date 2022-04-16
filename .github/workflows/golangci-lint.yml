@@ -15,10 +15,10 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-      - name: golang-ci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
+      # - name: golang-ci-lint
+      #   uses: golangci/golangci-lint-action@v2
+      #   with:
+      #     version: v1.29
 
       - name: Test
         run: go test -v `go list ./... | grep -v models`
