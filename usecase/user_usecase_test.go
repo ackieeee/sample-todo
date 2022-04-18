@@ -8,11 +8,16 @@ import (
 )
 
 type mockUserRepository struct {
+	findFunc   func() (*entity.User, error)
 	getAllFunc func() (entity.Users, error)
 }
 
 func (ur *mockUserRepository) GetAll(ctx context.Context) (entity.Users, error) {
 	return ur.getAllFunc()
+}
+
+func (ur *mockUserRepository) Find(ctx context.Context, email string) (*entity.User, error) {
+	return ur.findFunc()
 }
 
 func TestGetAll(t *testing.T) {
@@ -23,6 +28,9 @@ func TestGetAll(t *testing.T) {
 	}{
 		{
 			&mockUserRepository{
+				func() (*entity.User, error) {
+					return nil, nil
+				}
 				func() (entity.Users, error) {
 					users := entity.Users{
 						{

@@ -25,5 +25,7 @@ func main() {
 	r.Post("/tasks/add", handler.JsonHandler(ah.Th.AddTask).ServeHTTP)
 	r.Post("/tasks/status/update", handler.JsonHandler(ah.Th.ChangeStatus).ServeHTTP)
 	r.Get("/users", handler.JsonHandler(ah.Uh.GetAll).ServeHTTP)
+	r.Post("/users/add", handler.JsonHandler(ah.Uh.Signup).ServeHTTP)
+	r.Post("/login", handler.JsonHandler(ah.Uh.Login).ServeHTTP)
 	http.ListenAndServe(":3000", r)
 }
