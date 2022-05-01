@@ -65,8 +65,7 @@ func (th *taskhandler) AddTask(w http.ResponseWriter, r *http.Request) (int, int
 }
 
 func (th *taskhandler) GetAll(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
-	ctx := context.Background()
-	tasks, err := th.tu.GetAll(ctx)
+	tasks, err := th.tu.GetAll(r.Context())
 	if err != nil {
 		return http.StatusBadRequest, nil, err
 	}

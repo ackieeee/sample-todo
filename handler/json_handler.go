@@ -12,6 +12,7 @@ func (h JsonHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	status, payload, err := h(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	responseJson(w, status, payload)
 }

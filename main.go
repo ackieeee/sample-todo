@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gba-3/sample-todo/handler"
+	sm "github.com/gba-3/sample-todo/middleware"
 	"github.com/gba-3/sample-todo/registry"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -21,7 +22,7 @@ func main() {
 	}
 
 	ah := registry.NewRegistory().Regist(db)
-	r.Get("/tasks", handler.JsonHandler(ah.Th.GetAll).ServeHTTP)
+	r.With(sm.WithToken).Get("/tasks", handler.JsonHandler(ah.Th.GetAll).ServeHTTP)
 	r.Post("/tasks/add", handler.JsonHandler(ah.Th.AddTask).ServeHTTP)
 	r.Post("/tasks/status/update", handler.JsonHandler(ah.Th.ChangeStatus).ServeHTTP)
 	r.Get("/users", handler.JsonHandler(ah.Uh.GetAll).ServeHTTP)

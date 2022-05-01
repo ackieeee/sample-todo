@@ -71,6 +71,7 @@ func (tr *taskRepository) GetAll(ctx context.Context) (entity.Tasks, error) {
 	}
 	for _, task := range tasks {
 		e := entity.Task{
+			ID:          int(task.ID),
 			Title:       task.Title,
 			Description: task.Description.String,
 			Date:        task.Date.Time.String(),
