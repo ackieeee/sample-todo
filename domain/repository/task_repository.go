@@ -44,7 +44,10 @@ func (tr *taskRepository) ChangeStatus(ctx context.Context, id int, status bool)
 }
 
 func (tr *taskRepository) AddTask(ctx context.Context, title string, description string, date string) error {
-
+	tx, err := tr.db.Begin()
+	if err != nil {
+		return err
+	}
 	d := null.NewString(description, true)
 	if description == "" {
 		d = null.NewString("", false)
@@ -59,7 +62,15 @@ func (tr *taskRepository) AddTask(ctx context.Context, title string, description
 		Description: d,
 		Date:        null.NewTime(t, true),
 	}
-	return task.Insert(ctx, tr.db, boil.Infer())
+	if err := task.Insert(ctx, tx, boil.Infer()); err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Commit(); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return nil
 }
 
 func (tr *taskRepository) GetAll(ctx context.Context) (entity.Tasks, error) {
